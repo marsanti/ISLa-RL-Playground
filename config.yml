@@ -1,0 +1,20 @@
+use_wandb: true
+wandb_config:
+  project: "FrameworkRL"
+  entity: "luca0"
+  tag: "Student_VR111111"
+
+DRL_methods:
+  - name: REINFORCE
+    parameters:
+      hidden_layers: 2         # The number of hidden layer of the neural network
+      nodes_hidden_layers: 32  # The number of neurons in hidden layers of the neural network
+      gamma: 0.99              # Discount factor
+      lr_optimizer_pi: 0.00004 # learning rate optimizer policy pi
+      baseline: True           # if use baseline approach or not in the update function
+      lr_optimizer_vf: 0.00004 # learning rate optimizer value funtion
+     
+
+    gym_environment: CartPole-v1
+    tot_episodes: 1500
+    seeds_to_test: [0,1,2]
