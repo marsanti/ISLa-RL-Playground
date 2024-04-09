@@ -1,4 +1,4 @@
-# ISLa-RL-Playground
+# ISLa-RL-Playground <img width="100" alt="portfolio_view" align="right" src="https://isla-lab.github.io/images/slider/slider-image.svg"> 
 
 Welcome to the ISLa-Reinforcement Learning (RL) Playground!🚀 A Framework developed for the RL course at the University of Verona designed to help students familiarize and test their own implementations of advanced state-of-the-art Deep Reinforcement Learning (DRL) methods.
 
