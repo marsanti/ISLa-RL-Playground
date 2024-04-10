@@ -1,5 +1,5 @@
 import yaml
-from utils import check_parameters
+from utils import *
 import importlib
 import wandb
 from algos_template.reinforce import REINFORCE
@@ -39,10 +39,15 @@ if __name__ == '__main__':
     print(f"Wandb Config: {wandb_config}")
     print()
 
+    results = []
     # Accessing parameters for each DRL method and env and perfom the experiment
     for method in config['DRL_methods']:
 
-      
+        run = {}
+        run['env'] = method['gym_environment']
+        run['method'] = method['name']
+        run['training_episodes'] = method['tot_episodes']
+
         # check params privided for the algorithm to evaluate
         check_parameters(method)
 
@@ -56,16 +61,35 @@ if __name__ == '__main__':
 
        
         # training loop
+        mean_rewards = []
         for seed in seeds_to_test:
-            wandb_config['run_name'] = method['name'] + '_seed_' + str(seed)
-            wandb_config['algo'] = method['name']
-            wandb_config['seed'] = seed
-            wandb_config['env'] = method['gym_environment']
+
+            if use_wandb:
+                wandb_config['run_name'] = method['name'] + '_seed_' + str(seed)
+                wandb_config['algo'] = method['name']
+                wandb_config['seed'] = seed
+                wandb_config['env'] = method['gym_environment']
 
             # instantiation of the method
             drl_method_instance = instantiate_drl_method(method, use_wandb)
-            drl_method_instance.training_loop(seed, wandb_config)
+            mean_rewards.append(drl_method_instance.training_loop(seed, wandb_config))
+
+        run['mean_rewards'] = mean_rewards
+        results.append(run)
+
+    if not use_wandb:
+        # plotting the results and save figure in results/name_env/plot.png
+        # Define the environment you want to filter by
+        available_envs = ['CartPole-v1', 'MountainCarContinuous-v0', 'TB3-v0']
+
+        for env in available_envs:
+            # Filter the list based on the 'env' key
+            filtered_list = [d for d in results if d.get('env') == env]
             
+            if len(filtered_list) > 1:
+                print(f"\n{YELLOW_COL}\tPlotting results of env {env} in the folder: results/{env}/\n{RESET_COL}")
+                plot_results(filtered_list)
 
-
-
+    print(f"{GREEN_COL}============================================{RESET_COL}")
+    print(f"{GREEN_COL} All the experiments have been performed! {RESET_COL}")
+    print(f"{GREEN_COL}============================================\n\n{RESET_COL}")

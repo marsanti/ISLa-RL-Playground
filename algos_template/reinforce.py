@@ -80,6 +80,7 @@ class REINFORCE():
         # Close the enviornment and return the rewards list
         self.env.close()
         wandb.finish()
+        return rewards_list if not self.use_wandb else None
 
     def update_policy(self, memory_buffer):
 

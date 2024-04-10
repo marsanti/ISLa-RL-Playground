@@ -4,6 +4,9 @@ import torch.optim as optim
 from torch.distributions import Categorical
 import torch.nn.functional as F
 import wandb
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
 
 CYAN_COL = '\033[96m'
 BLUE_COL = '\033[94m'
@@ -102,3 +105,36 @@ def init_wandb(args):
         save_code=False,
         config=args
     )
+
+
+def plot_results(results):
+
+	# results is a list of dictionaries where we have [{'method': 'name_method', 'mean_rew': [[r1,...,rn] (seed 0), [r1,...,rn], [r1,..., rn]], 'training_episodes': episodes}]
+
+	# we take the training episodes from the first dictionary as if we want to compare two methods they should have performed the same number pof episodes
+	t = list(range(0, results[0]['training_episodes']))
+
+	# Plotting
+	sns.set_style("darkgrid")
+	plt.figure(figsize=(8, 6))  # Set the figure size
+ 
+	for dict in results:
+		data = {'Environment Step': [], 'Mean Reward': []}
+		for _, rewards in enumerate(dict['mean_rewards']):
+			for step, reward in zip(t, rewards):
+				data['Environment Step'].append(step)
+				data['Mean Reward'].append(reward)
+		df = pd.DataFrame(data)
+		
+		sns.lineplot(data=df, x='Environment Step', y='Mean Reward', label=dict['method'], errorbar='se')
+
+	plt.title(f'{dict["env"]}')
+	# Add title and labels
+	plt.xlabel('Episodes')
+	plt.ylabel('Mean Reward')
+
+	# Show legend
+	plt.legend()
+
+	# Show plot
+	plt.savefig(f'results/{dict["env"]}/plot.pdf', format='pdf')
