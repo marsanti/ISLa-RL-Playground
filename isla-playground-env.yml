@@ -1,0 +1,15 @@
+name: rl-playground
+channels:
+  - defaults
+dependencies:
+  - python=3.8
+  - pip:
+    - numpy
+    - tqdm
+    - torch
+    - scipy
+    - matplotlib
+    - seaborn
+    - pandas
+    - gymnasium
+    - gym_unity==0.16.1
