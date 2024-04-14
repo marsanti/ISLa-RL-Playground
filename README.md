@@ -1,6 +1,19 @@
 # ISLa-RL-Playground <img width="100" alt="portfolio_view" align="right" src="https://isla-lab.github.io/images/slider/slider-image.svg"> 
 
-Welcome to the ISLa-Reinforcement Learning (RL) Playground!🚀 A Framework developed for the RL course at the University of Verona designed to help students familiarize and test their own implementations of advanced state-of-the-art Deep Reinforcement Learning (DRL) methods.
+Welcome to the ISLa-Reinforcement Learning (RL) Playground!🚀 A Framework developed for the RL course at the University of Verona designed to help students familiarize and test their own implementations of advanced state-of-the-art Deep Reinforcement Learning (DRL) methods in Gymnasium and Unity-based realistic environments.
+
+<div style="text-align:center;">
+    <img src="images/banner.png" alt="ISLa-Reinforcement Learning (RL) Playground environments" style="width:300px;height:300px;" />
+</div>
+
+
+<div style="display: flex; justify-content: space-between;">
+    <img src="images/cart_pole.gif" alt="CartPole" width="200" />
+    <img src="images/lunar_lander.gif" alt="LunarLander" width="200" />
+    <img src="images/frozen_lake.gif" alt="FrozenLake"width="200" />
+    <img src="images/tb3.gif" alt="TB3" width="200" />
+</div>
+
 
 ## Features
 
@@ -35,13 +48,13 @@ conda activate rl-playground
 
 > Several examples and templates are provided to understand how to define environments, implement algorithms, and train agents using the framework.
 
-In detail, once you have finished to implement your algorithms, you only have to modify the `config.yml` file, as shown in this simple example:
+In detail, once you have finished implementing your algorithms, you only have to modify the `config.yml` file, as shown in this simple example:
 
 ```yaml
 use_wandb: True
 wandb_config:
   project: "FrameworkRL"
-  entity: "ISLaLab"
+  entity: "luca0" # set entity with this name for the final submission
   tag: "Student_VR111111"
 
 DRL_methods:
