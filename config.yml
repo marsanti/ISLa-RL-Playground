@@ -1,8 +1,8 @@
 use_wandb: True
 wandb_config:
   project: "FrameworkRL"
-  entity: "islab-lab"
-  tag: "Student_VR111111"
+  entity: "luca0"
+  tag: "Student_VR111112"
 
 DRL_methods:
   - name: REINFORCE 
