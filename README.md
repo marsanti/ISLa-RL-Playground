@@ -1,19 +1,18 @@
 # ISLa-RL-Playground <img width="100" alt="portfolio_view" align="right" src="https://isla-lab.github.io/images/slider/slider-image.svg"> 
 
-Welcome to the ISLa-Reinforcement Learning (RL) Playground!🚀 A Framework developed for the RL course at the University of Verona designed to help students familiarize and test their own implementations of advanced state-of-the-art Deep Reinforcement Learning (DRL) methods in Gymnasium and Unity-based realistic environments.
+Welcome to the ISLa-Reinforcement Learning (RL) Playground!🚀 A Framework developed for the RL course at the University of Verona designed to help students familiarize and test their own PyTorch implementations of advanced state-of-the-art Deep Reinforcement Learning (DRL) methods in [Gymnasium](https://gymnasium.farama.org) and [Unity+ML agents](https://unity.com/products/machine-learning-agents)-based realistic environments.
 
 <div style="text-align:center;">
-    <img src="images/banner.png" alt="ISLa-Reinforcement Learning (RL) Playground environments" style="width:300px;height:300px;" />
+    <img src="images/banner.png" width="800" height="300" />
 </div>
 
 
 <div style="display: flex; justify-content: space-between;">
     <img src="images/cart_pole.gif" alt="CartPole" width="200" />
-    <img src="images/lunar_lander.gif" alt="LunarLander" width="200" />
-    <img src="images/frozen_lake.gif" alt="FrozenLake"width="200" />
-    <img src="images/tb3.gif" alt="TB3" width="200" />
+    <img src="images/lunar_lander.gif" alt="LunarLander" width="150" />
+    <img src="images/frozen_lake.gif" alt="FrozenLake"width="150" />
+    <img src="images/tb3.gif" alt="TB3" width="300" />
 </div>
-
 
 ## Features
 
@@ -46,9 +45,23 @@ conda activate rl-playground
 
 ## Configure your experiments
 
+1. The first step in using the framework is to develop the DRL algorithms. In the folder `algos_template`, you can find a set of Python template files that you have to fill in. Note that you can decide to implement all the algorithms or only a part; however, remember that some algorithms might perform better than others depending on the characteristics of the environment (e.g., continuous or discrete observation/action space)!
+
+> You can also test different environments from the Gymnasium suite. However, if you're using this framework as part of the RL exam, we will evaluate your implementation in the following 4 environments:
+> 1. CartPole-V1
+> 2. LunarLander 
+> 3. FrozenLake
+> 4. TB3 Unity env
+
+> And we will consider/support only these algorithms for the evaluation:
+> 1. PPO
+> 2. DDPG
+> 3. SAC
+> 4. MCTS
+
 > Several examples and templates are provided to understand how to define environments, implement algorithms, and train agents using the framework.
 
-In detail, once you have finished implementing your algorithms, you only have to modify the `config.yml` file, as shown in this simple example:
+2. Once you have finished implementing your algorithms, you only have to modify the `config.yml` file, as shown in this simple example:
 
 ```yaml
 use_wandb: True
@@ -72,7 +85,7 @@ DRL_methods:
     tot_episodes: 1500
     seeds_to_test: [0,1,2]
 ```
-In the first row, you can specify whether to use or not wandb to log your results. Notice that if you are using this framework for the project exam, you must set True the `use_wandb` variable and define your ID in the `tag` parameter before the final submission. In the `DRL_methods` section, specify each method implemented with the respective hyperparameters to use in each environment you want to test. In the example, we define the algorithm REINFORCE with baseline, using a discount factor gamma=0.99, a policy network composed of two hidden layers with 32 nodes with an optimizer for the policy adam and an initial learning rate=4e-5, and similar for the value function network. Finally, we specified that we want to test this algorithm with these specific hyperparameters on the `CartPole-v1` gym environment for 1500 episodes using the seed 0,1,2 for the DNN and environment initialization, respectively. 
+In the first row, you can specify whether to use or not wandb to log your results. **If you are using this framework for the project exam, you must set True the `use_wandb` variable, set `entity` variable to "luca0" and define your ID in the `tag` parameter before the final submission**. In the `DRL_methods` section, specify each method implemented with the respective hyperparameters to use in each environment you want to test. In the example, we define the algorithm REINFORCE with baseline, using a discount factor gamma=0.99, a policy network composed of two hidden layers with 32 nodes with an optimizer for the policy adam and an initial learning rate=4e-5, and similar for the value function network. Finally, we specified that we want to test this algorithm with these specific hyperparameters on the `CartPole-v1` gym environment for 1500 episodes using the seed 0,1,2 for the DNN and environment initialization, respectively. 
 
 > To test/compare multiple algorithms in the same environment, you should create another subsection with the same structure reported above. For example, if you want to test REINFORCE and PPO on `CartPole-v1` you will have:
 
@@ -125,5 +138,11 @@ If, instead, you prefer to plot your results locally, just specify in the yaml c
 
 Here, we provide the plots of our baseline in the environments supported in the framework to have a general idea of the expected performance of your algorithms. Please note that these results are obtained with simplified implementations, and we encourage you to achieve better performance with respect to the one reported here! 
 
+<div style="text-align:center;">
+    <img src="images/baseline_reinforce.png" width="700" height="500" />
+</div>
 
 Happy Reinforcement Learning! 🤖
+
+## Author and contact information
+*  Teaching assistant: **Luca Marzari** - luca.marzari@univr.it
