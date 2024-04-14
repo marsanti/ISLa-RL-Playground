@@ -11,13 +11,8 @@ DRL_methods:
       nodes_hidden_layers: 32  # The number of neurons in hidden layers of the neural network
       gamma: 0.99              # Discount factor
       lr_optimizer_pi: 0.00004 # learning rate optimizer policy pi
-<<<<<<< HEAD
       baseline: True           # if use baseline approach or not in the update function
       lr_optimizer_vf: 0.00004 # learning rate optimizer value funtion
-=======
-      baseline: True           # if using baseline approach or not in the update function
-      lr_optimizer_vf: 0.00004 # learning rate optimizer value function
->>>>>>> 1ea5734788fce91b52909249f87be9d273347e35
      
 
     gym_environment: CartPole-v1
