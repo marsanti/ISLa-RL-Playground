@@ -3,7 +3,7 @@
 Welcome to the ISLa-Reinforcement Learning (RL) Playground!🚀 A Framework developed for the RL course at the University of Verona designed to help students familiarize and test their own PyTorch implementations of advanced state-of-the-art Deep Reinforcement Learning (DRL) methods for [Gymnasium](https://gymnasium.farama.org) and [Unity+ML agents](https://unity.com/products/machine-learning-agents)-based realistic environments.
 
 <div style="text-align:center;">
-    <img src="images/banner.png" width="800" height="300" />
+    <img src="images/banner.png" width="750" height="300" />
 </div>
 
 
@@ -27,7 +27,9 @@ Welcome to the ISLa-Reinforcement Learning (RL) Playground!🚀 A Framework deve
 ## Getting Started
 
 **Installation**: Clone the repository and follow the setup instructions provided here below:
-   > To use this repo, we suggest creating a virtual environment using Anaconda and installing all the dependencies reported above. If you have followed the RL course, you simply have to activate your RL conda environment.
+   > To use this repo, we suggest creating a virtual environment using Anaconda and installing all the dependencies reported above. If you have followed the RL course, you simply have to activate your RL conda environment, and install the additional wandb package using:
+
+    pip install wandb
 
    ISLa-RL-playground is tested on Python 3.8+ and PyTorch 2.x. It can be installed easily into a conda environment. If you don't have anaconda, you can install it from here [miniconda](https://docs.conda.io/en/latest/miniconda.html).
 
