@@ -1,8 +1,6 @@
 import yaml
 from utils import *
 import importlib
-import wandb
-from algos_template.reinforce import REINFORCE
 import numpy as np
 
 
@@ -40,7 +38,7 @@ if __name__ == '__main__':
     print()
 
     results = []
-    # Accessing parameters for each DRL method and env and perfom the experiment
+    # Accessing parameters for each DRL method and env and performing the experiment
     for method in config['DRL_methods']:
 
         run = {}
@@ -48,7 +46,7 @@ if __name__ == '__main__':
         run['method'] = method['name']
         run['training_episodes'] = method['tot_episodes']
 
-        # check params privided for the algorithm to evaluate
+        # check the params provided for the algorithm to evaluate
         check_parameters(method)
 
         # check if use manual or random seeds
@@ -78,7 +76,7 @@ if __name__ == '__main__':
         results.append(run)
 
     if not use_wandb:
-        # plotting the results and save figure in results/name_env/plot.png
+        # plotting the results and save the figure in results/name_env/plot.png
         # Define the environment you want to filter by
         available_envs = ['CartPole-v1', 'MountainCarContinuous-v0', 'TB3-v0']
 
@@ -86,7 +84,7 @@ if __name__ == '__main__':
             # Filter the list based on the 'env' key
             filtered_list = [d for d in results if d.get('env') == env]
             
-            if len(filtered_list) > 1:
+            if len(filtered_list) >= 1:
                 print(f"\n{YELLOW_COL}\tPlotting results of env {env} in the folder: results/{env}/\n{RESET_COL}")
                 plot_results(filtered_list)
 
