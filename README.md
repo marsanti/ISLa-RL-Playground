@@ -38,7 +38,7 @@ cd ISLa-RL-Playground
 # Remove the old environment, if necessary.
 conda deactivate; conda env remove -n rl-playground
 # Create a new conda environment
-conda env create -f isla-playground-env.yml
+conda env create -f utils/isla-playground-env.yml
 # Activate the environment
 conda activate rl-playground
 ```
