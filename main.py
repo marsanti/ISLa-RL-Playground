@@ -1,5 +1,5 @@
 import yaml
-from utils import *
+from utils.utils import *
 import importlib
 import numpy as np
 

@@ -3,7 +3,7 @@ import torch
 import torch.nn.functional as F
 import gymnasium
 import collections
-from utils import TorchModel, ValueModel, init_wandb
+from utils.utils import TorchModel, ValueModel, init_wandb
 import wandb
 import random
 
