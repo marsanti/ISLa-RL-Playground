@@ -45,25 +45,22 @@ class REINFORCE():
         for ep in range(self.total_episodes):
 
             # Reset the environment and the episode reward before the episode
-            state = self.env.reset(seed=seed)[0]
+            state = None
             ep_reward = 0
             memory_buffer.append([])
 
             while True:
 
                 # Select the action to perform
-                distribution = self.policy(torch.tensor(state.reshape(-1, 4)).type(torch.float)).detach().numpy()[0]
-                action = np.random.choice(2, p=distribution)
+               #TODO
             
                 # Perform the action, store the data in the memory buffer and update the reward
-                next_state, reward, terminated, truncated, _ = self.env.step(action)
-                done = terminated or truncated
-                memory_buffer[-1].append([state, action, reward, next_state, done])
-                ep_reward += reward
+               #TODO
 
                 # Exit condition for the episode
+                done = True
                 if done: break
-                state = next_state
+                state = None
 
             # Update the reward list to return
             reward_queue.append(ep_reward)
@@ -86,44 +83,22 @@ class REINFORCE():
 
         for ep in range(len(memory_buffer)):
             # Extraction of the information from the buffer (for the considered episode)
-            states = np.array([entry[0] for entry in memory_buffer[ep]]).reshape(-1, 4)
-            actions = np.array([entry[1] for entry in memory_buffer[ep]])
-            rewards = np.array([entry[2] for entry in memory_buffer[ep]])
+            states = []
+            actions = []
+            rewards = []
 
         # Iterate over all the trajectories considered
         G = []
         g = 0
         for r in reversed(rewards):  # calculate the return G reversely
-            g = self.gamma * g + r
-            G.insert(0, g)
+            #TODO
+            pass
 
         if not self.use_baseline:
             for t in range(len(rewards)):
-                state = torch.unsqueeze(torch.tensor(states[t], dtype=torch.float), 0)
-                action = actions[t]
-                g = G[t]
-
-                a_prob = self.policy(state).flatten()
-                policy_loss = -pow(self.gamma, t) * g * torch.log(a_prob[action])
-                self.policy_optimizer.zero_grad()
-                policy_loss.backward()
-                self.policy_optimizer.step()
+               #implement reinforce algorithm
+               pass
         else:
             for t in range(len(rewards)):
-                state = torch.unsqueeze(torch.tensor(states[t], dtype=torch.float), 0)
-                a = actions[t]
-                g = G[t]
-                v_s = self.vf(state).flatten()
-
-                # Update policy
-                a_prob = self.policy(state).flatten()
-                policy_loss = -pow(self.gamma, t) * ((g - v_s).detach()) * torch.log(a_prob[a])
-                self.policy_optimizer.zero_grad()
-                policy_loss.backward()
-                self.policy_optimizer.step()
-
-                # Update value function
-                value_loss = F.mse_loss(v_s, torch.tensor([g], dtype=torch.float))
-                self.vf_optimizer.zero_grad()
-                value_loss.backward()
-                self.vf_optimizer.step()
+               #implement reinforce algorithm with baseline
+               pass
