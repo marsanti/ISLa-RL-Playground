@@ -95,6 +95,55 @@ class ValueModel(nn.Module):
 		x = self.output(x)
 		return x
 	
+class ActorModel(nn.Module):
+	"""
+	Class that generates a neural network with PyTorch and specific parameters.
+
+	Args:
+		nInputs: number of input nodes
+		nOutputs: number of output nodes
+		nLayer: number of hidden layers
+		nNodes: number nodes in the hidden layers
+		
+	"""
+	
+	# Initialize the neural network
+	def __init__(self, nInputs, nOutputs, nLayer, nNodes):
+		
+		super(ActorModel, self).__init__()
+		# your code here
+  		
+		self.output = nn.Linear(nNodes, nOutputs)
+
+	def forward(self, x):
+		# your code here	
+		return F.softmax(x, dim=1)
+	
+
+class CriticModel(nn.Module):
+	"""
+	Class that generates a neural network with PyTorch and specific parameters.
+
+	Args:
+		nInputs: number of input nodes
+		nOutputs: number of output nodes
+		nLayer: number of hidden layers
+		nNodes: number nodes in the hidden layers
+		
+	"""
+	
+	# Initialize the neural network
+	def __init__(self, nInputs, nOutputs, nLayer, nNodes):
+		
+		super(CriticModel, self).__init__()
+		# your code here
+  
+		self.output = nn.Linear(nNodes, nOutputs)
+
+	def forward(self, x):
+		# your code here	
+		return F.linear(x, dim=1)
+	
 
 def init_wandb(args):
     wandb.init(

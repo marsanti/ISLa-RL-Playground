@@ -18,3 +18,22 @@ DRL_methods:
     gym_environment: CartPole-v1
     tot_episodes: 150
     seeds_to_test: [0,1,2]
+
+  - name: DDPG 
+    parameters:
+      hidden_layers_actor: 2         # The number of hidden layers of the actor network
+      hidden_layers_critic: 2         # The number of hidden layers of the critic network
+      nodes_hidden_layers_actor: 32  # The number of neurons in hidden layers of the actor network
+      nodes_hidden_layers_critic: 32  # The number of neurons in hidden layers of the critic network
+      gamma: 0.99              # Discount factor
+      tau: 0.005
+      update_freq: 50
+      n_updates: 10
+      lr_actor_optimizer: 0.00004 # learning rate optimizer policy pi
+      lr_critic_optimizer: 0.00004 # learning rate optimizer value funtion
+      eps_decay: 0.9
+     
+
+    gym_environment: MountainCarContinuous-v0
+    tot_episodes: 150
+    seeds_to_test: [0,1,2]
