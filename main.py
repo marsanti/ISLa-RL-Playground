@@ -15,6 +15,7 @@ def read_config(file_path):
 def instantiate_drl_method(params, wandb):
     method_name = params['name']
     module_name =  f"algos_template.{method_name.lower()}"  # Assuming module name is same as method name, just in lowercase
+    #module_name =  f"algos_sol.{method_name.lower()}"
     class_name = method_name.upper()  # Assuming class name is same as method name, just in uppercase
 
     try:
@@ -55,7 +56,7 @@ if __name__ == '__main__':
             # test algorithm on random seeds
             seeds_to_test = [np.random.randint(0, 2000) for _ in range(3)]
         else:
-           seeds_to_test = method['seeds_to_test']
+            seeds_to_test = method['seeds_to_test']
 
        
         # training loop
@@ -67,6 +68,9 @@ if __name__ == '__main__':
                 wandb_config['algo'] = method['name']
                 wandb_config['seed'] = seed
                 wandb_config['env'] = method['gym_environment']
+                wandb_config['gamma'] = method['parameters']['gamma']
+                wandb_config['lr_optimizer_pi'] = method['parameters']['lr_optimizer_pi']
+                wandb_config['lr_optimizer_vf'] = method['parameters']['lr_optimizer_vf']
 
             # instantiation of the method
             drl_method_instance = instantiate_drl_method(method, use_wandb)
@@ -78,7 +82,7 @@ if __name__ == '__main__':
     if not use_wandb:
         # plotting the results and save the figure in results/name_env/plot.png
         # Define the environment you want to filter by
-        available_envs = ['CartPole-v1', 'MountainCarContinuous-v0', 'TB3-v0']
+        available_envs = ['CartPole-v1', 'MountainCarContinuous-v0', 'TB3']
 
         for env in available_envs:
             # Filter the list based on the 'env' key

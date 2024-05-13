@@ -35,10 +35,11 @@ class TorchModel(nn.Module):
 	"""
 	
 	# Initialize the neural network
-	def __init__(self, nInputs, nOutputs, nLayer, nNodes):
+	def __init__(self, nInputs, nOutputs, nLayer, nNodes, last_activation=F.linear):
 		
 		super(TorchModel, self).__init__()
 		self.nLayer = nLayer
+		self.last_activation= last_activation
 
 		# input layer
 		self.fc1 = nn.Linear(nInputs, nNodes)
@@ -56,93 +57,7 @@ class TorchModel(nn.Module):
 		for i in range(2, self.nLayer + 2):
 			x = F.relu(getattr(self, f'fc{i}')(x).to(x.dtype))
 		x = self.output(x)
-		return F.softmax(x, dim=1)
-	
-
-class ValueModel(nn.Module):
-	"""
-	Class that generates a neural network with PyTorch and specific parameters.
-
-	Args:
-		nInputs: number of input nodes
-		nOutputs: number of output nodes
-		nLayer: number of hidden layers
-		nNodes: number nodes in the hidden layers
-		
-	"""
-	
-	# Initialize the neural network
-	def __init__(self, nInputs=4, nOutputs=1, nLayer=1, nNodes=64):
-		
-		super(ValueModel, self).__init__()
-		self.nLayer = nLayer
-
-		# input layer
-		self.fc1 = nn.Linear(nInputs, nNodes)
-
-		#hidden layers
-		for i in range(nLayer):
-			layer_name = f"fc{i+2}"
-			self.add_module(layer_name, nn.Linear(nNodes, nNodes))  
-
-		#output
-		self.output = nn.Linear(nNodes, nOutputs)
-
-	def forward(self, x):
-		x = F.relu(self.fc1(x))
-		for i in range(2, self.nLayer + 2):
-			x = F.relu(getattr(self, f'fc{i}')(x).to(x.dtype))
-		x = self.output(x)
-		return x
-	
-class ActorModel(nn.Module):
-	"""
-	Class that generates a neural network with PyTorch and specific parameters.
-
-	Args:
-		nInputs: number of input nodes
-		nOutputs: number of output nodes
-		nLayer: number of hidden layers
-		nNodes: number nodes in the hidden layers
-		
-	"""
-	
-	# Initialize the neural network
-	def __init__(self, nInputs, nOutputs, nLayer, nNodes):
-		
-		super(ActorModel, self).__init__()
-		# your code here
-  		
-		self.output = nn.Linear(nNodes, nOutputs)
-
-	def forward(self, x):
-		# your code here	
-		return F.softmax(x, dim=1)
-	
-
-class CriticModel(nn.Module):
-	"""
-	Class that generates a neural network with PyTorch and specific parameters.
-
-	Args:
-		nInputs: number of input nodes
-		nOutputs: number of output nodes
-		nLayer: number of hidden layers
-		nNodes: number nodes in the hidden layers
-		
-	"""
-	
-	# Initialize the neural network
-	def __init__(self, nInputs, nOutputs, nLayer, nNodes):
-		
-		super(CriticModel, self).__init__()
-		# your code here
-  
-		self.output = nn.Linear(nNodes, nOutputs)
-
-	def forward(self, x):
-		# your code here	
-		return F.linear(x, dim=1)
+		return x if self.last_activation == F.linear else self.last_activation(x, dim=1)
 	
 
 def init_wandb(args):

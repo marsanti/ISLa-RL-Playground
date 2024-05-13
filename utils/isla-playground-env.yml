@@ -14,4 +14,6 @@ dependencies:
     - seaborn
     - pandas
     - gymnasium
-    - gym_unity==0.16.1
+    - gym==0.20.0
+    - gym_unity==0.28.0
+    

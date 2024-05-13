@@ -1,39 +1,22 @@
-use_wandb: False
+use_wandb: True
 wandb_config:
-  project: "FrameworkRL"
-  entity: "luca0"
-  tag: "Student_VR111112"
+  project: # TODO
+  entity: # TODO
+  tag: # TODO
 
 DRL_methods:
   - name: REINFORCE 
     parameters:
       hidden_layers: 2         # The number of hidden layers of the neural network
-      nodes_hidden_layers: 32  # The number of neurons in hidden layers of the neural network
+      nodes_hidden_layers: 64  # The number of neurons in hidden layers of the neural network
       gamma: 0.99              # Discount factor
-      lr_optimizer_pi: 0.00004 # learning rate optimizer policy pi
+      lr_optimizer_pi: 0.001   # learning rate optimizer policy pi
       baseline: True           # if use baseline approach or not in the update function
-      lr_optimizer_vf: 0.00004 # learning rate optimizer value funtion
+      lr_optimizer_vf: 0.001   # learning rate optimizer value funtion
      
 
-    gym_environment: CartPole-v1
-    tot_episodes: 150
+    gym_environment: TB3
+    tot_episodes: 2000
     seeds_to_test: [0,1,2]
 
-  - name: DDPG 
-    parameters:
-      hidden_layers_actor: 2         # The number of hidden layers of the actor network
-      hidden_layers_critic: 2         # The number of hidden layers of the critic network
-      nodes_hidden_layers_actor: 32  # The number of neurons in hidden layers of the actor network
-      nodes_hidden_layers_critic: 32  # The number of neurons in hidden layers of the critic network
-      gamma: 0.99              # Discount factor
-      tau: 0.005
-      update_freq: 50
-      n_updates: 10
-      lr_actor_optimizer: 0.00004 # learning rate optimizer policy pi
-      lr_critic_optimizer: 0.00004 # learning rate optimizer value funtion
-      eps_decay: 0.9
-     
-
-    gym_environment: MountainCarContinuous-v0
-    tot_episodes: 150
-    seeds_to_test: [0,1,2]
+  
