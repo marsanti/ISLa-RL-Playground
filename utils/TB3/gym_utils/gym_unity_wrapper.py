@@ -39,7 +39,7 @@ class UnitySafetyGym(gym.Env):
 			#env_path = "../macos/TB3.app"
 			env_path = "utils/TB3/macos/TB3.app"
 		elif env_type == 'linux':
-			env_path = "../linux/TB3.x86_64"
+			env_path = "utils/TB3/linux/TB3.x86_64"
 		else: raise Exception("Only macos and linux are supported")
 
 		conf_ch = EngineConfigurationChannel()
