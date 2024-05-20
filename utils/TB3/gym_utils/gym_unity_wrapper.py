@@ -40,7 +40,9 @@ class UnitySafetyGym(gym.Env):
 			env_path = "utils/TB3/macos/TB3.app"
 		elif env_type == 'linux':
 			env_path = "utils/TB3/linux/TB3.x86_64"
-		else: raise Exception("Only macos and linux are supported")
+		elif env_type == 'windows':
+			env_path = "utils/TB3/windows/TB3/Turtlebot3.exe"
+		else: raise Exception("Only macos, linux and windows are supported")
 
 		conf_ch = EngineConfigurationChannel()
 		unity_env = UnityEnvironment(env_path, worker_id=worker_id, no_graphics=no_graphics, seed=seed, side_channels=[conf_ch])
