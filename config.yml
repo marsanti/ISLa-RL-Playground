@@ -1,22 +1,48 @@
-use_wandb: True
+use_wandb: False
 wandb_config:
-  project: # TODO
-  entity: # TODO
-  tag: # TODO
+  project: "FrameworkRL"
+  entity: "marsanti"
+  tag: 'Student_VR504613'
 
-DRL_methods:
-  - name: REINFORCE 
-    parameters:
-      hidden_layers: 2         # The number of hidden layers of the neural network
-      nodes_hidden_layers: 64  # The number of neurons in hidden layers of the neural network
-      gamma: 0.99              # Discount factor
-      lr_optimizer_pi: 0.001   # learning rate optimizer policy pi
-      baseline: True           # if use baseline approach or not in the update function
-      lr_optimizer_vf: 0.001   # learning rate optimizer value funtion
+DRL_methods: 
+  # - name: SAC 
+  #   parameters:
+  #     hidden_layers_actor: 2
+  #     hidden_layers_critic: 2
+  #     nodes_hidden_layers_actor: 32
+  #     nodes_hidden_layers_critic: 32
+  #     gamma: 0.99
+  #     alpha: 0.2
+  #     lr_actor_optimizer: 0.001 
+  #     lr_critic_optimizer: 0.001
+  #     tau: 0.005
+  #     update_freq : 25
+  #     n_updates : 75
+  #     eps_decay : 0.9999
+  #     batch_size: 100
      
 
-    gym_environment: TB3
-    tot_episodes: 2000
-    seeds_to_test: [0,1,2]
+  #   gym_environment: TB3
+  #   tot_episodes: 5000
+  #   seeds_to_test: [0,1,2]
 
-  
+  - name: DDPG 
+    parameters:
+      hidden_layers_actor: 2                   # Reduced complexity to avoid overfitting
+      hidden_layers_critic: 2                  # Reduced to match the actor
+      nodes_hidden_layers_actor: 256           # Increased nodes to improve learning capacity
+      nodes_hidden_layers_critic: 256          # Increased for better critic evaluation
+      gamma: 0.99                              # Slightly lower for balancing short- and long-term rewards
+      lr_actor_optimizer: 0.0002               # Reduced learning rate for more stable actor learning
+      lr_critic_optimizer: 0.0003              # Slightly reduced for stable critic learning
+      tau: 0.995                               # Decreased for smoother target network updates
+      update_freq : 10                        # More frequent updates for faster learning
+      n_updates : 25                       # Increased number of updates per iteration
+      eps_decay : 0.99                       # Slower decay for better exploration
+      batch_size: 64                         # Increased batch size for better gradient estimates
+
+    
+
+    gym_environment: LunarLanderContinuous-v2
+    tot_episodes: 5000
+    seeds_to_test: [0,1,2]

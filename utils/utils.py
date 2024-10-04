@@ -1,4 +1,4 @@
-
+import torch
 import torch.nn as nn
 import torch.optim as optim
 from torch.distributions import Categorical
@@ -59,6 +59,33 @@ class TorchModel(nn.Module):
 		x = self.output(x)
 		return x if self.last_activation == F.linear else self.last_activation(x, dim=1)
 	
+class ActorModel(TorchModel):
+	def __init__(self, nInputs, nOutputs, nLayer, nNodes, max_action):
+		super().__init__(nInputs, nOutputs, nLayer, nNodes)	
+		self.max_action = max_action
+
+	def forward(self, x):
+		x = F.relu(self.fc1(x))
+		for i in range(2, self.nLayer + 2):
+			x = F.relu(getattr(self, f'fc{i}')(x).to(x.dtype))
+		x = self.output(x)
+		# return x if self.last_activation == F.linear else self.last_activation(x)
+		return torch.tanh(x) * self.max_action
+
+class CriticModel(TorchModel):
+	def __init__(self, nInputs, nOutputs, nLayer, nNodes, last_activation=F.linear):
+		super().__init__(nInputs, nOutputs, nLayer, nNodes, last_activation)
+
+	# override forward method
+	def forward(self, state, action):
+		x = F.relu(self.fc1(torch.cat([state, action], 1)))
+		for i in range(2, self.nLayer + 2):
+			x = F.relu(getattr(self, f'fc{i}')(x).to(x.dtype))
+
+		# calculate the q value with the last layer
+		q_value = self.output(x)
+		
+		return q_value
 
 def init_wandb(args):
     wandb.init(
