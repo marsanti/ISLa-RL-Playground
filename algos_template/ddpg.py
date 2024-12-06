@@ -2,7 +2,7 @@ import time
 import numpy as np
 import torch
 import torch.nn.functional as F
-import gymnasium
+import gymnasium as gym
 import collections
 from utils.utils import ActorModel, CriticModel, init_wandb
 import wandb
@@ -13,7 +13,7 @@ import copy
 class DDPG():
     def __init__(self, params, use_wandb=False):
         if params['gym_environment'] != 'TB3':
-            self.env = gymnasium.make(params['gym_environment'])
+            self.env = gym.make(params['gym_environment'], continuous=True)
         else:
             from utils.TB3.gym_utils.gym_unity_wrapper import UnitySafetyGym
             self.env = UnitySafetyGym(editor_run=False, env_type="linux", worker_id=int(time.time())%10000, time_scale=100, no_graphics=True, max_step=100, action_space_type='continuous')
@@ -34,7 +34,7 @@ class DDPG():
         self.lr_critic = params['parameters']['lr_critic_optimizer']
 
         # create actor and critic
-        self.actor = ActorModel(self.state_dim, self.action_dim, self.hidden_layers_actor, self.nodes_hidden_layers_actor, self.max_action)
+        self.actor = ActorModel(self.state_dim, self.action_dim, self.hidden_layers_actor, self.nodes_hidden_layers_actor)
         self.actor_optimizer = torch.optim.Adam(self.actor.parameters(), lr=self.lr_actor)
         self.critic = CriticModel(self.state_dim + self.action_dim, 1, self.hidden_layers_critic, self.nodes_hidden_layers_critic)
         self.critic_optimizer = torch.optim.Adam(self.critic.parameters(), lr=self.lr_critic)
@@ -64,7 +64,7 @@ class DDPG():
         if self.use_wandb: init_wandb(args_wandb)
 
         rewards_list, reward_queue = [], collections.deque(maxlen=100)
-        memory_buffer = []
+        memory_buffer = collections.deque(maxlen=100000)
         for ep in range(self.total_episodes):
 
             # Reset the environment and the episode reward before the episode
@@ -107,12 +107,13 @@ class DDPG():
                 for _ in range(self.n_updates):
                     self.update_policy(memory_buffer)
             
-                memory_buffer = []
+                # memory_buffer = []
 
         # Close the enviornment and return the rewards list
         self.env.close()
         wandb.finish()
-        return rewards_list if not self.use_wandb else None
+        # return rewards_list if not self.use_wandb else None
+        return rewards_list
 
     def update_policy(self, memory_buffer):
 
@@ -122,22 +123,13 @@ class DDPG():
         
         if(len(memory_buffer) < self.batch_size): return
 
-        # Sample a batch of experiences
-        # state, action, reward, next_state, done = zip(*random.sample(memory_buffer, self.batch_size))
-
-        # state = torch.stack(state).type(torch.float).to(self.device)
-        # action = torch.tensor(action, dtype=torch.float).to(self.device)
-        # reward = torch.tensor(reward, dtype=torch.float).to(self.device).unsqueeze(1)
-        # next_state = torch.stack(next_state).type(torch.float).to(self.device)
-        # done = torch.tensor(done, dtype=torch.float).to(self.device).unsqueeze(1)
-
         batch = random.sample(memory_buffer, self.batch_size)
 
-        state = torch.tensor(np.array([s[0] for s in batch])).type(torch.float)
-        action = torch.tensor(np.array([s[1] for s in batch])).type(torch.float)
-        reward = torch.tensor(np.array([s[2] for s in batch])).type(torch.float).unsqueeze(1)
-        next_state = torch.tensor(np.array([s[3] for s in batch])).type(torch.float)
-        done = torch.tensor(np.array([s[4] for s in batch])).type(torch.float).unsqueeze(1)
+        state = torch.tensor(np.array([s[0] for s in batch])).type(torch.float).to(self.device)
+        action = torch.tensor(np.array([s[1] for s in batch])).type(torch.float).to(self.device)
+        reward = torch.tensor(np.array([s[2] for s in batch])).type(torch.float).unsqueeze(1).to(self.device)
+        next_state = torch.tensor(np.array([s[3] for s in batch])).type(torch.float).to(self.device)
+        done = torch.tensor(np.array([s[4] for s in batch])).type(torch.float).unsqueeze(1).to(self.device)
 
         # Compute the target Q
         with torch.no_grad():  # target_Q has no gradient

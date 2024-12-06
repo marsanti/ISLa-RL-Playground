@@ -1,12 +1,13 @@
 import torch
 import torch.nn as nn
 import torch.optim as optim
-from torch.distributions import Categorical
+from torch.distributions import Categorical, Normal
 import torch.nn.functional as F
 import wandb
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
+import numpy as np
 
 CYAN_COL = '\033[96m'
 BLUE_COL = '\033[94m'
@@ -57,20 +58,20 @@ class TorchModel(nn.Module):
 		for i in range(2, self.nLayer + 2):
 			x = F.relu(getattr(self, f'fc{i}')(x).to(x.dtype))
 		x = self.output(x)
-		return x if self.last_activation == F.linear else self.last_activation(x, dim=1)
+		# return x if self.last_activation == F.linear else self.last_activation(x, dim=1)
+		return x if self.last_activation == F.linear else self.last_activation(x)
 	
 class ActorModel(TorchModel):
-	def __init__(self, nInputs, nOutputs, nLayer, nNodes, max_action):
+	def __init__(self, nInputs, nOutputs, nLayer, nNodes):
 		super().__init__(nInputs, nOutputs, nLayer, nNodes)	
-		self.max_action = max_action
+
 
 	def forward(self, x):
 		x = F.relu(self.fc1(x))
 		for i in range(2, self.nLayer + 2):
 			x = F.relu(getattr(self, f'fc{i}')(x).to(x.dtype))
 		x = self.output(x)
-		# return x if self.last_activation == F.linear else self.last_activation(x)
-		return torch.tanh(x) * self.max_action
+		return torch.tanh(x)
 
 class CriticModel(TorchModel):
 	def __init__(self, nInputs, nOutputs, nLayer, nNodes, last_activation=F.linear):
@@ -86,6 +87,31 @@ class CriticModel(TorchModel):
 		q_value = self.output(x)
 		
 		return q_value
+
+class GaussianActor_musigma(nn.Module):
+	def __init__(self, state_dim, action_dim, net_width):
+		super(GaussianActor_musigma, self).__init__()
+
+		self.l1 = nn.Linear(state_dim, net_width)
+		self.l2 = nn.Linear(net_width, net_width)
+		self.mu_head = nn.Linear(net_width, action_dim)
+		self.sigma_head = nn.Linear(net_width, action_dim)
+
+	def forward(self, state):
+		a = torch.tanh(self.l1(state))
+		a = torch.tanh(self.l2(a))
+		mu = torch.sigmoid(self.mu_head(a))
+		sigma = F.softplus( self.sigma_head(a) )
+		return mu,sigma
+
+	def get_dist(self, state):
+		mu,sigma = self.forward(state)
+		dist = Normal(mu,sigma)
+		return dist
+
+	def deterministic_act(self, state):
+		mu, _ = self.forward(state)
+		return mu
 
 def init_wandb(args):
     wandb.init(
@@ -111,13 +137,13 @@ def plot_results(results):
  
 	for dict in results:
 		data = {'Environment Step': [], 'Mean Reward': []}
-		for _, rewards in enumerate(dict['mean_rewards']):
+		for seed, rewards in enumerate(dict['mean_rewards']):
 			for step, reward in zip(t, rewards):
 				data['Environment Step'].append(step)
 				data['Mean Reward'].append(reward)
-		df = pd.DataFrame(data)
+			df = pd.DataFrame(data)
 		
-		sns.lineplot(data=df, x='Environment Step', y='Mean Reward', label=dict['method'], errorbar='se')
+			sns.lineplot(data=df, x='Environment Step', y='Mean Reward', label=[dict['method'], seed], errorbar='se')
 
 	plt.title(f'{dict["env"]}')
 	# Add title and labels

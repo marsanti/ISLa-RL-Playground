@@ -5,44 +5,62 @@ wandb_config:
   tag: 'Student_VR504613'
 
 DRL_methods: 
-  # - name: SAC 
+#   - name: SAC 
+#     parameters:
+#       hidden_layers_actor: 2
+#       hidden_layers_critic: 2
+#       nodes_hidden_layers_actor: 128
+#       nodes_hidden_layers_critic: 128
+#       gamma: 0.99
+#       alpha: 0.2
+#       lr_actor_optimizer: 0.0002 
+#       lr_critic_optimizer: 0.0003
+#       tau: 0.995
+#       update_freq : 1
+#       n_updates : 10
+#       eps_decay : 0.9999
+#       batch_size: 64
+     
+
+#     gym_environment: LunarLanderContinuous-v2
+#     tot_episodes: 5000
+#     seeds_to_test: [0,1,2]
+
+  # - name: PPO
   #   parameters:
   #     hidden_layers_actor: 2
   #     hidden_layers_critic: 2
-  #     nodes_hidden_layers_actor: 32
-  #     nodes_hidden_layers_critic: 32
+  #     nodes_hidden_layers_actor: 128
+  #     nodes_hidden_layers_critic: 128
+  #     lr_actor_optimizer: 0.0002
+  #     lr_critic_optimizer: 0.0002
   #     gamma: 0.99
-  #     alpha: 0.2
-  #     lr_actor_optimizer: 0.001 
-  #     lr_critic_optimizer: 0.001
-  #     tau: 0.005
-  #     update_freq : 25
-  #     n_updates : 75
-  #     eps_decay : 0.9999
-  #     batch_size: 100
-     
+  #     lambda: 0.95
+  #     entropy_coefficient: 0.001
+  #     epsilon_clip: 0.2
+  #     T_horizon : 2048
+  #     n_updates : 5
 
-  #   gym_environment: TB3
-  #   tot_episodes: 5000
+  #   gym_environment: LunarLander-v2
+  #   tot_steps: 50000000
+  #   tot_episodes: 50000000
   #   seeds_to_test: [0,1,2]
 
   - name: DDPG 
     parameters:
-      hidden_layers_actor: 2                   # Reduced complexity to avoid overfitting
-      hidden_layers_critic: 2                  # Reduced to match the actor
-      nodes_hidden_layers_actor: 256           # Increased nodes to improve learning capacity
-      nodes_hidden_layers_critic: 256          # Increased for better critic evaluation
-      gamma: 0.99                              # Slightly lower for balancing short- and long-term rewards
-      lr_actor_optimizer: 0.0002               # Reduced learning rate for more stable actor learning
-      lr_critic_optimizer: 0.0003              # Slightly reduced for stable critic learning
-      tau: 0.995                               # Decreased for smoother target network updates
-      update_freq : 10                        # More frequent updates for faster learning
-      n_updates : 25                       # Increased number of updates per iteration
-      eps_decay : 0.99                       # Slower decay for better exploration
-      batch_size: 64                         # Increased batch size for better gradient estimates
+      hidden_layers_actor: 1                  
+      hidden_layers_critic: 1                  
+      nodes_hidden_layers_actor: 256           
+      nodes_hidden_layers_critic: 256          
+      gamma: 0.99                              
+      lr_actor_optimizer: 0.0005            
+      lr_critic_optimizer: 0.001         
+      tau: 0.005                               
+      update_freq : 1                         
+      n_updates : 20                           
+      eps_decay : 0.99                         
+      batch_size : 128                          
 
-    
-
-    gym_environment: LunarLanderContinuous-v2
-    tot_episodes: 5000
+    gym_environment: LunarLander-v2
+    tot_episodes: 2000
     seeds_to_test: [0,1,2]
