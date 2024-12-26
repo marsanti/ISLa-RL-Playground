@@ -5,26 +5,27 @@ wandb_config:
   tag: 'Student_VR504613'
 
 DRL_methods: 
-#   - name: SAC 
-#     parameters:
-#       hidden_layers_actor: 2
-#       hidden_layers_critic: 2
-#       nodes_hidden_layers_actor: 128
-#       nodes_hidden_layers_critic: 128
-#       gamma: 0.99
-#       alpha: 0.2
-#       lr_actor_optimizer: 0.0002 
-#       lr_critic_optimizer: 0.0003
-#       tau: 0.995
-#       update_freq : 1
-#       n_updates : 10
-#       eps_decay : 0.9999
-#       batch_size: 64
+  - name: SAC 
+    parameters:
+      hidden_layers_actor: 2
+      hidden_layers_critic: 2
+      nodes_hidden_layers_actor: 256
+      nodes_hidden_layers_critic: 256
+      gamma: 0.99
+      alpha: 0.12
+      adaptive_alpha: True
+      lr_actor_optimizer: 0.0003 
+      lr_critic_optimizer: 0.0003
+      tau: 0.005
+      update_freq : 1
+      n_updates : 1
+      eps_decay : 0.9999
+      batch_size: 256
      
 
-#     gym_environment: LunarLanderContinuous-v2
-#     tot_episodes: 5000
-#     seeds_to_test: [0,1,2]
+    gym_environment: LunarLanderContinuous-v2
+    tot_episodes: 5000
+    seeds_to_test: [0,1,2]
 
   # - name: PPO
   #   parameters:
@@ -46,21 +47,21 @@ DRL_methods:
   #   tot_episodes: 50000000
   #   seeds_to_test: [0,1,2]
 
-  - name: DDPG 
-    parameters:
-      hidden_layers_actor: 1                  
-      hidden_layers_critic: 1                  
-      nodes_hidden_layers_actor: 256           
-      nodes_hidden_layers_critic: 256          
-      gamma: 0.99                              
-      lr_actor_optimizer: 0.0005            
-      lr_critic_optimizer: 0.001         
-      tau: 0.005                               
-      update_freq : 1                         
-      n_updates : 20                           
-      eps_decay : 0.99                         
-      batch_size : 128                          
+  # - name: DDPG 
+  #   parameters:
+  #     hidden_layers_actor: 1                  
+  #     hidden_layers_critic: 1                  
+  #     nodes_hidden_layers_actor: 256           
+  #     nodes_hidden_layers_critic: 256          
+  #     gamma: 0.99                              
+  #     lr_actor_optimizer: 0.0005            
+  #     lr_critic_optimizer: 0.001         
+  #     tau: 0.005                               
+  #     update_freq : 1                         
+  #     n_updates : 20                           
+  #     eps_decay : 0.99                         
+  #     batch_size : 128                          
 
-    gym_environment: LunarLander-v2
-    tot_episodes: 2000
-    seeds_to_test: [0,1,2]
+  #   gym_environment: LunarLander-v2
+  #   tot_episodes: 2000
+  #   seeds_to_test: [0,1,2]

@@ -69,8 +69,9 @@ if __name__ == '__main__':
                 wandb_config['seed'] = seed
                 wandb_config['env'] = method['gym_environment']
                 wandb_config['gamma'] = method['parameters']['gamma']
-                wandb_config['lr_optimizer_pi'] = method['parameters']['lr_optimizer_pi']
-                wandb_config['lr_optimizer_vf'] = method['parameters']['lr_optimizer_vf']
+                wandb_config['lr_actor_optimizer'] = method['parameters']['lr_actor_optimizer']
+                wandb_config['lr_critic_optimizer'] = method['parameters']['lr_critic_optimizer']
+
 
             # instantiation of the method
             drl_method_instance = instantiate_drl_method(method, use_wandb)
@@ -79,10 +80,12 @@ if __name__ == '__main__':
         run['mean_rewards'] = mean_rewards
         results.append(run)
 
-    if not use_wandb:
+    # plot the results anyway even if wandb is used
+    # if not use_wandb:
+    if True:
         # plotting the results and save the figure in results/name_env/plot.png
         # Define the environment you want to filter by
-        available_envs = ['CartPole-v1', 'MountainCarContinuous-v0', 'TB3']
+        available_envs = ['CartPole-v1', 'MountainCarContinuous-v0', 'TB3', 'LunarLander-v2', 'LunarLanderContinuous-v2']
 
         for env in available_envs:
             # Filter the list based on the 'env' key

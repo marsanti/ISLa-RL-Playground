@@ -88,6 +88,63 @@ class CriticModel(TorchModel):
 		
 		return q_value
 
+class Double_Q_Critic(nn.Module):
+	def __init__(self, stateDim, actionDim, nLayer, nNodes):
+		super(Double_Q_Critic, self).__init__()
+
+		self.Q_1 = TorchModel(stateDim + actionDim, 1, nLayer, nNodes)
+		self.Q_2 = TorchModel(stateDim + actionDim, 1, nLayer, nNodes)
+
+	def forward(self, state, action):
+		sa = torch.cat([state, action], 1)
+		q1 = self.Q_1(sa)
+		q2 = self.Q_2(sa)
+		return q1, q2
+
+def build_net(layer_shape, hidden_activation, output_activation):
+	'''Build net with for loop'''
+	layers = []
+	for j in range(len(layer_shape)-1):
+		act = hidden_activation if j < len(layer_shape)-2 else output_activation
+		layers += [nn.Linear(layer_shape[j], layer_shape[j+1]), act()]
+	return nn.Sequential(*layers)
+
+class ActorSAC(nn.Module):
+	def __init__(self, state_dim, action_dim, hid_shape, hidden_activation=nn.ReLU, output_activation=nn.ReLU):
+		super(ActorSAC, self).__init__()
+		layers = [state_dim] + list(hid_shape)
+
+		self.a_net = build_net(layers, hidden_activation, output_activation)
+		self.mu_layer = nn.Linear(layers[-1], action_dim)
+		self.log_std_layer = nn.Linear(layers[-1], action_dim)
+
+		self.LOG_STD_MAX = 2
+		self.LOG_STD_MIN = -20
+
+	def forward(self, state, deterministic, with_logprob):
+		'''Network with Enforcing Action Bounds'''
+		net_out = self.a_net(state)
+		mu = self.mu_layer(net_out)
+		log_std = self.log_std_layer(net_out)
+		log_std = torch.clamp(log_std, self.LOG_STD_MIN, self.LOG_STD_MAX) 
+		# we learn log_std rather than std, so that exp(log_std) is always > 0
+		std = torch.exp(log_std)
+		dist = Normal(mu, std)
+		if deterministic: u = mu
+		else: u = dist.rsample()
+
+		'''↓↓↓ Enforcing Action Bounds, see Page 16 of https://arxiv.org/pdf/1812.05905.pdf ↓↓↓'''
+		a = torch.tanh(u)
+		if with_logprob:
+			# Get probability density of logp_pi_a from probability density of u:
+			# logp_pi_a = (dist.log_prob(u) - torch.log(1 - a.pow(2) + 1e-6)).sum(dim=1, keepdim=True)
+			# Derive from the above equation. No a, thus no tanh(h), thus less gradient vanish and more stable.
+			logp_pi_a = dist.log_prob(u).sum(axis=1, keepdim=True) - (2 * (np.log(2) - u - F.softplus(-2 * u))).sum(axis=1, keepdim=True)
+		else:
+			logp_pi_a = None
+
+		return a, logp_pi_a
+
 class GaussianActor_musigma(nn.Module):
 	def __init__(self, state_dim, action_dim, net_width):
 		super(GaussianActor_musigma, self).__init__()
